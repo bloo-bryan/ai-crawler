@@ -1,0 +1,32 @@
+{
+  "name": "Lesson Content Extractor",
+  "baseSelector": "div#lessonContent div.step",
+  "fields": [
+    {
+      "name": "header",
+      "selector": "div.stepHeader .stepName",
+      "type": "text"
+    },
+    {
+      "name": "content",
+      "type": "attribute",
+      "attribute": "data-full-content"
+    },
+    {
+      "name": "images",
+      "selector": "div.graphic img",
+      "type": "attribute",
+      "attribute": "src"
+    },
+    {
+      "name": "topic",
+      "type": "attribute",
+      "attribute": "data-topic"
+    },
+    {
+      "name": "prerequisites",
+      "type": "attribute",
+      "attribute": "data-prerequisites"
+    }
+  ]
+}

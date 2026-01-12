@@ -1,0 +1,104 @@
+{
+  "name": "Property Listing Card",
+  "baseSelector": "div.listing-card-v2",
+  "fields": [
+    {
+      "name": "agent_name",
+      "selector": "span[da-id='listing-card-v2-agent-name']",
+      "type": "text"
+    },
+    {
+      "name": "agent_rating",
+      "selector": "div.contact-details__rating span.hui-typography",
+      "type": "text"
+    },
+    {
+      "name": "agency_name",
+      "selector": "span[da-id='listing-card-v2-agency-name']",
+      "type": "text"
+    },
+    {
+      "name": "property_title",
+      "selector": "div.card-body",
+      "type": "attribute",
+      "attribute": "title"
+    },
+    {
+      "name": "listing_url",
+      "selector": "a.card-footer",
+      "type": "attribute",
+      "attribute": "href"
+    },
+    {
+      "name": "primary_image_url",
+      "selector": "img.hui-image.hui-image--1_1.blur-effect",
+      "type": "attribute",
+      "attribute": "src"
+    },
+    {
+      "name": "number_of_photos",
+      "selector": "a[da-id='listing-card-v2-images-info-btn'] span.hui-typography",
+      "type": "text"
+    },
+    {
+      "name": "description",
+      "selector": "span.agent-description",
+      "type": "text"
+    },
+    {
+      "name": "price",
+      "selector": "div.listing-price",
+      "type": "text"
+    },
+    {
+      "name": "price_per_sqft",
+      "selector": "p.listing-ppa",
+      "type": "text"
+    },
+    {
+      "name": "address",
+      "selector": "p.listing-address",
+      "type": "text"
+    },
+    {
+      "name": "bedrooms",
+      "selector": "div[da-id='listing-card-v2-bedrooms'] p",
+      "type": "text"
+    },
+    {
+      "name": "bathrooms",
+      "selector": "div[da-id='listing-card-v2-bathrooms'] p",
+      "type": "text"
+    },
+    {
+      "name": "area",
+      "selector": "div[da-id='listing-card-v2-area'] p",
+      "type": "text"
+    },
+    {
+      "name": "unit_type",
+      "selector": "div[da-id='listing-card-v2-unit-type'] p",
+      "type": "text"
+    },
+    {
+      "name": "build_year",
+      "selector": "div[da-id='listing-card-v2-build-year'] p",
+      "type": "text"
+    },
+    {
+      "name": "availability",
+      "selector": "div[da-id='listing-card-v2-availability'] p",
+      "type": "text"
+    },
+    {
+      "name": "mrt_info",
+      "selector": "div.listing-location span.listing-location-value",
+      "type": "text"
+    },
+    {
+      "name": "listed_on",
+      "selector": "ul.listing-recency span.hui-typography",
+      "type": "text"
+    }
+  ]
+}
