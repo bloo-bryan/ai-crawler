@@ -5,6 +5,9 @@ import json
 from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, BrowserConfig, CacheMode, JsonCssExtractionStrategy, DefaultMarkdownGenerator, PruningContentFilter
 from crawl4ai.content_scraping_strategy import LXMLWebScrapingStrategy
 import jsonschema2md
+import re
+import base64
+import uuid
 
 load_dotenv()
 google_api_key = os.getenv("GEMINI_API_KEY")
@@ -187,13 +190,18 @@ async def mathex():
                 topic = data[0]['topic']
                 with open(f"{topic}.md", "w", encoding="utf-8") as md_file:
                     prereqs = data[0]['prerequisites'].split(',')
-                    md_file.write(f"---")
-                    md_file.write("\nPrerequisites:\n")
+                if not os.path.exists("ai-crawler/images"):
+                    os.makedirs("ai-crawler/images")
 
-                    for prereq in prereqs:
-                        md_file.write(f"- [[{prereq}]]\n")
-                        
-                    md_file.write("---\n")
+                with open("mathex_output.md", "w", encoding="utf-8") as md_file:
+                    # Write Topic and Prerequisites once at the top if available
+                    if len(data) > 0:
+                        topic = data[0].get('topic', '')
+                        prereqs = data[0].get('prerequisites', '')
+                        if topic:
+                            md_file.write(f"# Topic: {topic}\n")
+                        if prereqs:
+                            md_file.write(f"**Prerequisites:** {prereqs}\n\n---\n\n")
 
                     for section in data:
                         title = section.get('header', '')
@@ -201,9 +209,34 @@ async def mathex():
 
                         if title:
                             title = title.replace(":", ": ")
-                            md_file.write(f"# {title}\n")
+                            md_file.write(f"## {title}\n")
 
                         if content:
+                            # Process images
+                            def replace_image(match):
+                                alt_text = match.group(1)
+                                data_url = match.group(2)
+                                
+                                if "base64," in data_url:
+                                    try:
+                                        _, b64_data = data_url.split("base64,", 1)
+                                        image_data = base64.b64decode(b64_data)
+                                        
+                                        image_filename = f"img_{uuid.uuid4().hex[:8]}.png"
+                                        image_path = os.path.join("ai-crawler", "images", image_filename)
+                                        
+                                        with open(image_path, "wb") as img_f:
+                                            img_f.write(image_data)
+                                            
+                                        return f"![{alt_text}](images/{image_filename})"
+                                    except Exception as e:
+                                        print(f"Error saving image: {e}")
+                                        return match.group(0) # Return original on error
+                                return match.group(0)
+
+                            # Regex to find ![alt](data:image/...) pattern
+                            content = re.sub(r'!\[(.*?)\]\((data:image\/[^;]+;base64,[^\)]+)\)', replace_image, content)
+
                             content = content.replace("\n\n\n", "\n\n")
                             md_file.write(content)
                             md_file.write("\n\n---\n")
