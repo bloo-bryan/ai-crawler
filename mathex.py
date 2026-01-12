@@ -72,7 +72,7 @@ async def mathex():
         const topicName = document.querySelector('#sidebar #topicName')?.textContent?.trim() || "";
         const prereqs = Array.from(document.querySelectorAll('#sidebar .prerequisiteLink'))
                             .map(el => el.textContent.trim())
-                            .join(', ');
+                            .join(',');
 
         const steps = document.querySelectorAll('div.step');
 
@@ -190,19 +190,16 @@ async def mathex():
                 topic = data[0]['topic']
                 with open(f"{topic}.md", "w", encoding="utf-8") as md_file:
                     prereqs = data[0]['prerequisites'].split(',')
-                if not os.path.exists("ai-crawler/images"):
-                    os.makedirs("ai-crawler/images")
+                    md_file.write(f"---")
+                    md_file.write("\nPrerequisites:\n")
 
-                with open("mathex_output.md", "w", encoding="utf-8") as md_file:
-                    # Write Topic and Prerequisites once at the top if available
-                    if len(data) > 0:
-                        topic = data[0].get('topic', '')
-                        prereqs = data[0].get('prerequisites', '')
-                        if topic:
-                            md_file.write(f"# Topic: {topic}\n")
-                        if prereqs:
-                            md_file.write(f"**Prerequisites:** {prereqs}\n\n---\n\n")
+                    for prereq in prereqs:
+                        md_file.write(f"- [[{prereq}]]\n")
+                        
+                    md_file.write("---\n")
 
+                    if not os.path.exists("ai-crawler/images"):
+                        os.makedirs("ai-crawler/images")
                     for section in data:
                         title = section.get('header', '')
                         content = section.get('content', '')
