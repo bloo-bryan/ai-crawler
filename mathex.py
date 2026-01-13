@@ -4,7 +4,6 @@ import os
 import json
 from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, BrowserConfig, CacheMode, JsonCssExtractionStrategy, DefaultMarkdownGenerator, PruningContentFilter
 from crawl4ai.content_scraping_strategy import LXMLWebScrapingStrategy
-import jsonschema2md
 import re
 import base64
 import uuid
@@ -13,7 +12,7 @@ load_dotenv()
 google_api_key = os.getenv("GEMINI_API_KEY")
 MATHACADEMY_EMAIL = os.getenv("MATHACADEMY_EMAIL")
 MATHACADEMY_PASSWORD = os.getenv("MATHACADEMY_PASSWORD")
-profile_path = "C:/Users/bryan/.crawl4ai/profiles/bloobryan"
+profile_path = "C:/Users/LooZhenDaw/.crawl4ai/profiles/bloobryan"
 
 async def mathex(): 
     browser_config = BrowserConfig(
@@ -56,7 +55,17 @@ async def mathex():
                     }
                 });
                 finalString = `$$${fullLatexString.trim()}$$`;
-            }
+            } else if (title.querySelector('span')) {
+                title.childNodes.forEach(node => {
+                    if (node.nodeType === 3) {
+                        fullLatexString += node.textContent.trim();
+                    }
+                    else if (node.nodeType === 1 && node.tagName.toLowerCase() === 'span') {
+                        fullLatexString += '\\\\';
+                    }
+                finalString = `$$${fullLatexString.trim()}$$`;
+                })
+            } 
             else {
                 fullLatexString += title.textContent.trim();
                 if (fullLatexString.length > 0) {
@@ -233,7 +242,6 @@ async def mathex():
 
                             # Regex to find ![alt](data:image/...) pattern
                             content = re.sub(r'!\[(.*?)\]\((data:image\/[^;]+;base64,[^\)]+)\)', replace_image, content)
-
                             content = content.replace("\n\n\n", "\n\n")
                             md_file.write(content)
                             md_file.write("\n\n---\n")
