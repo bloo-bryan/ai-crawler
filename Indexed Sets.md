@@ -2,7 +2,7 @@
 Prerequisites:
 - [[Subsets]]
 ---
-# Introduction
+## Introduction
 Interesting mathematical problems often involve a large (or infinite) collection of sets. Labeling each set with a subscript is often convenient in such situations.
 For example, suppose we define a collection of sets $A_i$ for $i\in\{1,2,3,\ldots\} = \mathbb N$ as follows:
 $A_1 = \{1,2\}, \qquad A_2 = \{3,4\}, \qquad A_3 = \{5,6\}, \qquad \ldots$
@@ -21,13 +21,13 @@ To write down, say, the elements of $B_{\color{blue}\sqrt{5}},$ we substitute $x
 $$\begin{align*} B_{\color{blue}\sqrt{5}} &= \left[ 0, \: ({\color{blue}\sqrt{5}})^2 \right) \\[5pt] &= \left[ 0, 5 \right) \end{align*}$$
 
 ---
-# Example: Identifying Elements of an Indexed Family
+## Example: Identifying Elements of an Indexed Family
 Find $T_2$ given that $T_n = \{ 1, 2, \ldots, 2n+1 \},$ where $n \in \mathbb{N}.$
 To write down the elements of $T_2,$ we substitute $n=2$ into the expression and get
 $$\begin{align*} T_2 &= \{ 1, 2, \ldots, 2(2)+1 \} \\[5pt] &= \{ 1, 2, \ldots, 5 \} \\[5pt] &= \{ 1, 2, 3, 4, 5 \}. \end{align*}$$
 
 ---
-# Unions of Indexed  Families
+## Unions of Indexed  Families
 Suppose we have the indexed family $\{A_i\}_{i\in I}$ where $I$ is an index set.
 The union of a family of indexed sets is the set containing all elements belonging to at least one set in the indexed family:
 $\bigcup_{i \in I} A_i = \big\{ x\in U \: : \: x \in A_i \:\:\textrm{for at least one } A_i,\:\: i \in I \big\}$ where $U$ is a universal set.
@@ -50,7 +50,7 @@ Finally, since our index set $I = \mathbb N$ in this example, we can also use th
 $$\begin{align*} \bigcup_{i =1}^\infty X_i = \mathbb Z \end{align*}$$
 
 ---
-# Intersections of Indexed  Families
+## Intersections of Indexed  Families
 Similarly, the intersection of a family of indexed sets $\{A_i\}_{i\in I}$ contains all elements that belong to all sets in our family:
 $\bigcap_{i \in I} A_i = \big\{ x\in U \: : \: x \in A_i \:\:\textrm{for all } A_i,\:\: i \in I \big\}$ where $U$ is a universal set.
 For example, suppose we have the following family of indexed sets:
@@ -72,7 +72,7 @@ Finally, since our index set $I = \mathbb N$ in this example, we can also use th
 $$\begin{align*} \bigcap_{i =1}^\infty S_i = \{0 \} \end{align*}$$
 
 ---
-# Example: Finding Unions and Intersections of Finite Families of Indexed Sets
+## Example: Finding Unions and Intersections of Finite Families of Indexed Sets
 Find $\,\displaystyle \bigcup_{i \in I} S_i$ , given that $I = \{ -1, 0, 1 \},$ and $S_i = (i-1, \,i+1).$
 The union of a family of indexed sets is the set containing all elements belonging to at least one set in the indexed family:
 $\bigcup_{i \in I} A_i = \big\{ x\in U \: : \: x \in A_i \:\:\textrm{for at least one } A_i,\:\: i \in I \big\}$ where $U$ is a universal set.
@@ -80,7 +80,7 @@ Therefore, in our case, we have
 $$\begin{align*} \bigcup_{i \in I} S_i &= S_{-1} \cup S_0 \cup S_1 \\ &= (-2, 0) \: \cup \: (-1, 1) \: \cup \: (0, 2) \\[5pt] &= (-2, 2). \end{align*}$$
 
 ---
-# Example: Finding Unions and Intersections of (Countably) Infinite Families of Indexed Sets
+## Example: Finding Unions and Intersections of (Countably) Infinite Families of Indexed Sets
 Find $\,\displaystyle \bigcap_{i \in I} X_i$ given that $I = \mathbb{N}$ and $X_i = \{ i, \, 2i \}.$
 The intersection of a family of indexed sets $\{A_i\}_{i\in I}$ contains all elements that belong to all sets in our family:
 $\bigcap_{i \in I} A_i = \big\{ x\in U \: : \: x \in A_i \:\:\textrm{for all } A_i,\:\: i \in I \big\}$ where $U$ is a universal set.

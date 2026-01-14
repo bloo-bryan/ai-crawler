@@ -1,6 +1,6 @@
 {
   "name": "Lesson Content Extractor",
-  "baseSelector": "div#lessonContent div.step",
+  "baseSelector": "div#lessonContent div.step:not(.questionWidget)",
   "fields": [
     {
       "name": "header",

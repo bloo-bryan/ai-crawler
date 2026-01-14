@@ -61,7 +61,8 @@ async def mathex():
                         fullLatexString += node.textContent.trim();
                     }
                     else if (node.nodeType === 1 && node.tagName.toLowerCase() === 'span') {
-                        fullLatexString += '\\\\';
+                        fullLatexString += "\\\\";
+                        fullLatexString += "\\\\";
                     }
                 finalString = `$$${fullLatexString.trim()}$$`;
                 })
@@ -83,7 +84,7 @@ async def mathex():
                             .map(el => el.textContent.trim())
                             .join(',');
 
-        const steps = document.querySelectorAll('div.step');
+        const steps = document.querySelectorAll('div.step:not(.questionWidget)');
 
         // Pre-process images: Fetch and convert to Base64
         const images = document.querySelectorAll('div.step img');
@@ -112,7 +113,7 @@ async def mathex():
             step.setAttribute('data-prerequisites', prereqs);
             
             // Include IMG in the selector
-            const contentNodes = Array.from(step.querySelectorAll('p, ol, ul, img'));
+            const contentNodes = Array.from(step.querySelectorAll('p, ol, ul, img, div.keyPrerequisites'));
 
             const textParts = [];
 
@@ -141,6 +142,14 @@ async def mathex():
                     const src = node.getAttribute('data-base64-src') || node.src;
                     const alt = node.alt || 'image';
                     textParts.push(`![${alt}](${src})`);
+                }
+
+                else if (node.tagName === 'DIV') {
+                    const prereqs = Array.from(document.querySelectorAll('#sidebar .prerequisiteLink'))
+                            .map(el => el.textContent.trim())
+                            .join(',');
+                    const text = node.textContent.replace(/\s+/g, ' ').trim();
+                    if (text) textParts.push(text);
                 }
             });
             
@@ -186,7 +195,7 @@ async def mathex():
         )
 
         results = await crawler.arun(
-            url="https://www.mathacademy.com/topics/935",
+            url="https://www.mathacademy.com/topics/2062",
             config=config2
         )
 
