@@ -27,6 +27,11 @@
       "name": "prerequisites",
       "type": "attribute",
       "attribute": "data-prerequisites"
+    },
+    {
+      "name": "key_prerequisites",
+      "type": "attribute",
+      "attribute": "data-key-prerequisites"
     }
   ]
 }

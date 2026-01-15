@@ -12,11 +12,14 @@ load_dotenv()
 google_api_key = os.getenv("GEMINI_API_KEY")
 MATHACADEMY_EMAIL = os.getenv("MATHACADEMY_EMAIL")
 MATHACADEMY_PASSWORD = os.getenv("MATHACADEMY_PASSWORD")
-profile_path = "C:/Users/LooZhenDaw/.crawl4ai/profiles/bloobryan"
+profile_path = "C:/Users/bryan/.crawl4ai/profiles/bloobryan"
+notes_path = "C:/Users/bryan/Documents/Obsidian/TheVault/Mathematics for Machine Learning"
+images_path = "C:/Users/bryan/Documents/Obsidian/TheVault/Mathematics for Machine Learning/images"
 
 async def mathex(): 
     browser_config = BrowserConfig(
         headless=False,
+        enable_stealth=True,
         use_managed_browser=True,
         user_data_dir=profile_path,
         browser_type='chromium',
@@ -145,15 +148,14 @@ async def mathex():
                 }
 
                 else if (node.tagName === 'DIV') {
-                    const prereqs = Array.from(document.querySelectorAll('#sidebar .prerequisiteLink'))
+                    const sub_prereqs = Array.from(node.querySelectorAll('.keyPrerequisite'))
                             .map(el => el.textContent.trim())
                             .join(',');
-                    const text = node.textContent.replace(/\s+/g, ' ').trim();
-                    if (text) textParts.push(text);
+                    step.setAttribute('data-key-prerequisites', sub_prereqs)
                 }
             });
             
-            const fullSectionText = textParts.join('\\n');
+            const fullSectionText = textParts.join('\\n\\n');
             step.setAttribute('data-full-content', fullSectionText);
         });
 
@@ -180,7 +182,6 @@ async def mathex():
     )
 
     async with AsyncWebCrawler(config=browser_config) as crawler:
-
         result = await crawler.arun(
             url="https://www.mathacademy.com/login",
             config=config
@@ -194,52 +195,77 @@ async def mathex():
             cache_mode=CacheMode.BYPASS,
         )
 
-        results = await crawler.arun(
-            url="https://www.mathacademy.com/topics/2062",
-            config=config2
-        )
-
-        for result in results:
-            print(f"URL: {result.url}")
-            print(f"Success: {result.success}")
+        urls = [
+            "https://www.mathacademy.com/topics/47?courseId=129",
+            "https://www.mathacademy.com/topics/58?courseId=129",
+            "https://www.mathacademy.com/topics/1976?courseId=129",
+            "https://www.mathacademy.com/topics/46?courseId=129",
+            "https://www.mathacademy.com/topics/4425?courseId=129",
+            "https://www.mathacademy.com/topics/4393?courseId=129",
+            "https://www.mathacademy.com/topics/4392?courseId=129",
+            "https://www.mathacademy.com/topics/50?courseId=129",
+            "https://www.mathacademy.com/topics/2828?courseId=129",
+            "https://www.mathacademy.com/topics/2829?courseId=129",
+            "https://www.mathacademy.com/topics/49?courseId=129",
+            "https://www.mathacademy.com/topics/4387?courseId=129",
+            "https://www.mathacademy.com/topics/55?courseId=129",
+            "https://www.mathacademy.com/topics/3334?courseId=129",
+            "https://www.mathacademy.com/topics/48?courseId=129",
+            "https://www.mathacademy.com/topics/4386?courseId=129",
+            "https://www.mathacademy.com/topics/1930?courseId=129",
+            "https://www.mathacademy.com/topics/4063?courseId=129",
+            "https://www.mathacademy.com/topics/4097?courseId=129",
+            "https://www.mathacademy.com/topics/1376?courseId=129",
+            "https://www.mathacademy.com/topics/1920?courseId=129",
+            "https://www.mathacademy.com/topics/1799?courseId=129",
+            "https://www.mathacademy.com/topics/1805?courseId=129",
+            "https://www.mathacademy.com/topics/1807?courseId=129",
+            "https://www.mathacademy.com/topics/1806?courseId=129",
+            "https://www.mathacademy.com/topics/2539?courseId=129",
+            "https://www.mathacademy.com/topics/967?courseId=129",
+            "https://www.mathacademy.com/topics/1831?courseId=129"
+        ]
+        
+        for url in urls:
+            result = await crawler.arun(
+                url=url,
+                config=config2
+            )
             if result.success:
+                print(f"URL: {result.url}")
+                print(f"Success: {result.success}")
                 data = json.loads(result.extracted_content)
-                print(data)
                 topic = data[0]['topic']
-                with open(f"{topic}.md", "w", encoding="utf-8") as md_file:
+                with open(f"{notes_path}/{topic}.md", "w", encoding="utf-8") as md_file:
                     prereqs = data[0]['prerequisites'].split(',')
-                    md_file.write(f"---")
-                    md_file.write("\nPrerequisites:\n")
-
+                    md_file.write("\n**Prerequisites:**\n")
                     for prereq in prereqs:
                         md_file.write(f"- [[{prereq}]]\n")
-                        
+                            
                     md_file.write("---\n")
-
-                    if not os.path.exists("ai-crawler/images"):
-                        os.makedirs("ai-crawler/images")
+                    # if not os.path.exists("ai-crawler/images"):
+                    #     os.makedirs("ai-crawler/images")
                     for section in data:
                         title = section.get('header', '')
                         content = section.get('content', '')
-
+                        key_prereqs = section.get('key_prerequisites', '')
                         if title:
-                            title = title.replace(":", ": ")
+                            title = title.replace("Example:", "Example: ")
                             md_file.write(f"## {title}\n")
-
                         if content:
                             # Process images
                             def replace_image(match):
                                 alt_text = match.group(1)
                                 data_url = match.group(2)
-                                
+                                    
                                 if "base64," in data_url:
                                     try:
                                         _, b64_data = data_url.split("base64,", 1)
                                         image_data = base64.b64decode(b64_data)
                                         
                                         image_filename = f"img_{uuid.uuid4().hex[:8]}.png"
-                                        image_path = os.path.join("ai-crawler", "images", image_filename)
-                                        
+                                        # image_path = os.path.join("ai-crawler", "images", image_filename)
+                                        image_path = os.path.join(images_path, image_filename)
                                         with open(image_path, "wb") as img_f:
                                             img_f.write(image_data)
                                             
@@ -248,17 +274,21 @@ async def mathex():
                                         print(f"Error saving image: {e}")
                                         return match.group(0) # Return original on error
                                 return match.group(0)
-
                             # Regex to find ![alt](data:image/...) pattern
                             content = re.sub(r'!\[(.*?)\]\((data:image\/[^;]+;base64,[^\)]+)\)', replace_image, content)
-                            content = content.replace("\n\n\n", "\n\n")
+                            # Ensure max 2 newlines
+                            content = re.sub(r'\n{3,}', '\n\n', content)
                             md_file.write(content)
-                            md_file.write("\n\n---\n")
-                # print(result.fit_html)
-                # print(result.markdown.fit_markdown)
+                            md_file.write("\n")
+                        if key_prereqs:
+                            md_file.write(f"\n\n*Key Prerequisites*\n")
+                            key_prereqs = key_prereqs.split(",")
+                            for key_prereq in key_prereqs:
+                                md_file.write(f"- [[{key_prereq.strip()}]]\n")
+                    # print(result.fit_html)
+                    # print(result.markdown.fit_markdown)
             else:
                 print("Failed to extract structured data")
-
 
 if __name__ == "__main__":
     asyncio.run(mathex())
